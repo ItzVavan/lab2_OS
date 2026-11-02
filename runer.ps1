@@ -19,12 +19,10 @@ function Run-With-Averaging {
         $foundTime = $null
 
         foreach ($line in $lines) {
-            # Ищем число с точкой, за которым следует 'сек' или 'sec' (независимо от кодировки слова перед ним)
             if ($line -match "([0-9]+\.[0-9]+)\s*(?:сек|sec)") {
                 $foundTime = [double]$matches[1]
                 break
             }
-            # Запасной вариант: если вывелось просто число в конце строки
             elseif ($line -match ":\s*([0-9]+\.[0-9]+)") {
                 $foundTime = [double]$matches[1]
             }
@@ -66,7 +64,6 @@ Write-Host "=== 2. ЗАМЕРЫ TRIANGLE ===" -ForegroundColor Cyan
 $n_triangle = 2500
 
 foreach ($t in $threads) {
-    # Запуск через cmd.exe гарантирует передачу чистых бинарных байт без искажения PowerShell
     $cmd_stat = 'cmd.exe /c "java -Xmx4g Generator ' + $n_triangle + ' ' + $n_triangle + ' | java -Xmx4g ComputeTriangle ' + $t + ' static"'
     Run-With-Averaging -cmd $cmd_stat -taskName "Triangle" -size $n_triangle -t $t -mode "static"
 
